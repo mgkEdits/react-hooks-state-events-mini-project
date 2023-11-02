@@ -5,31 +5,30 @@ import TaskList from "./TaskList";
 import { CATEGORIES, TASKS } from "../data";
 
 function App() {
-  const [tasks, setTasks] = useState(TASKS);
-  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  const handleTaskFormSubmit = (newTask) => {
-    setTasks([...tasks, newTask]);
-  };
+  const [tasks, setTasks] = useState(TASKS)
+  const [category, setCategory] = useState("All")
+  
+  function handleDelete(deletedTaskText) {
+    setTasks(tasks.filter((task) => task.text !== deletedTaskText));
+  }
+  
+  function handleAddTask(newTask) {
+    setTasks([...tasks, newTask])
+  }
 
-  const handleCategoryFilter = (category) => {
-    setSelectedCategory(category);
-  };
-
-  const handleDelete = (deletedTask) => {
-    setTasks(tasks.filter((task) => task !== deletedTask));
-  };
-
-  const visibleTasks = selectedCategory === "All" ? tasks : tasks.filter((task) => task.category === selectedCategory);
-
-  return (
-    <div className="App">
-      <h2>My tasks</h2>
-      <CategoryFilter categories={CATEGORIES} selectedCategory={selectedCategory} onCategoryFilter={handleCategoryFilter} />
-      <NewTaskForm categories={CATEGORIES} onTaskFormSubmit={handleTaskFormSubmit} />
-      <TaskList tasks={visibleTasks} onDelete={handleDelete}/>
-    </div>
-  );
-}
-
-export default App;
+  const visibleTasks = tasks.filter(
+    (task) => category === 'All' || task.category === category
+  )
+  
+    return (
+      <div className="App">
+        <h2>My tasks</h2>
+        <CategoryFilter categories={CATEGORIES} selectedCategory={category} onCategoryFilter={setCategory}/>
+        <NewTaskForm onTaskFormSubmit={handleAddTask} categories={CATEGORIES.filter((category) => category !== "All")}/>
+        <TaskList onHandleDelete={handleDelete} tasks={visibleTasks}/>
+      </div>
+    );
+  }
+  
+  export default App;
